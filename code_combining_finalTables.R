@@ -302,3 +302,77 @@ train_set<-final_table[-idx_test,]
 write.table(final_table, "finalTables/fullFinalTable.txt")
 write.table(test_set, "finalTables/test.txt")
 write.table(train_set, "finalTables/train.txt")
+
+#convert categorical variables from numeric to factors
+train<-train_set 
+test<-test_set
+
+train$DIQ010<-as.factor(train$DIQ010)
+levels(train$DIQ010)<-c("diabetes", "no_diabetes")
+
+test$DIQ010<-as.factor(test$DIQ010)
+levels(test$DIQ010)<-c("diabetes", "no_diabetes")
+
+train$RIAGENDR<-as.factor(train$RIAGENDR)
+levels(train$RIAGENDR)<-c("male", "female")
+
+test$RIAGENDR<-as.factor(test$RIAGENDR)
+levels(test$RIAGENDR)<-c("male", "female")
+
+train$RIDRETH1<-as.factor(train$RIDRETH1)
+levels(train$RIDRETH1)<-c("mexican_american", "other_hispanic", "non_hispanic_white", "non_hispanic_black","other")
+
+test$RIDRETH1<-as.factor(test$RIDRETH1)
+levels(test$RIDRETH1)<-c("mexican_american", "other_hispanic", "non_hispanic_white", "non_hispanic_black","other")
+
+train$BPQ020<-as.factor(train$BPQ020)
+levels(train$BPQ020)<-c("yes", "no")
+
+test$BPQ020<-as.factor(test$BPQ020)
+levels(test$BPQ020)<-c("yes", "no")
+
+train$BPXPULS<-as.factor(train$BPXPULS)
+levels(train$BPXPULS)<-c("regular", "irregular")
+
+test$BPXPULS<-as.factor(test$BPXPULS)
+levels(test$BPXPULS)<-c("regular", "irregular")
+
+train$DBQ700<-as.factor(train$DBQ700)
+levels(train$DBQ700)<-c("excellent", "very_good", "good", "fair", "poor")
+
+test$DBQ700<-as.factor(test$DBQ700)
+levels(test$DBQ700)<-c("excellent", "very_good", "good", "fair", "poor")
+
+train$HSD010<-as.factor(train$HSD010)
+levels(train$HSD010)<-c("excellent", "very_good", "good", "fair", "poor")
+
+test$HSD010<-as.factor(test$HSD010)
+levels(test$HSD010)<-c("excellent", "very_good", "good", "fair", "poor")
+
+train$HUQ090<-as.factor(train$HUQ090)
+levels(train$HUQ090)<-c("yes", "no")
+
+test$HUQ090<-as.factor(test$HUQ090)
+levels(test$HUQ090)<-c("yes", "no")
+
+train$MCQ010<-as.factor(train$MCQ010)
+levels(train$MCQ010)<-c("yes", "no")
+
+test$MCQ010<-as.factor(test$MCQ010)
+levels(test$MCQ010)<-c("yes", "no")
+
+train$MCQ053<-as.factor(train$MCQ053)
+levels(train$MCQ053)<-c("yes", "no")
+
+test$MCQ053<-as.factor(test$MCQ053)
+levels(test$MCQ053)<-c("yes", "no")
+
+train$SLQ050<-as.factor(train$SLQ050)
+levels(train$SLQ050)<-c("yes", "no")
+
+test$SLQ050<-as.factor(test$SLQ050)
+levels(test$SLQ050)<-c("yes", "no")
+
+#write new train/test tables
+write.table(train, "finalTables/train_cat.txt")
+write.table(test, "finalTables/test_cat.txt")
