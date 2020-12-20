@@ -1,3 +1,7 @@
+library(tidyverse)
+library(ggplot2)
+library(RColorBrewer)
+
 data_time <- read.table("finalTables/fullFinalTable_time.txt")
 train$DIQ010<-as.factor(train$DIQ010)
 levels(train$DIQ010)<-c("diabetes", "no_diabetes")
