@@ -36,7 +36,7 @@ We then combined all the data tables from after 2007 and removed individuals wit
   
   We then chose to fit five different models. To do this we used naive Bayes classifier, gradient boosting machine (GBM), decision trees, random forests and gradient boosted decision trees (XGBoost). All five models are implemented in the caret package in R and we used the corresponding functions from that package to fit our models. To account for the imbalance in our dataset, we chose to use area under the ROC curve (AUC) as a performance metric to both choose the best model in the training set, and to compare the subsequent models on the test set. This is a better metric by which to compare classifiers in the presence of imbalanced classes since it penalizes false positives and false negatives, both of which are very important to account for when classifying a serious disease such as diabetes. To further account for the imbalance, we chose to also fit weighted models as well as up-sampled, down-sampled, and synthetic minority over-sampling technique (SMOTE) models. Weights for cases were defined to be 1/(# of cases) * 0.5 = 2.01 x 10^(-4), and weights for controls were defined to be 1/(# of controls) * 0.5 = 2.85 x 10^(-5). The up-sampling method involves randomly duplicating observations from the “diabetes” class to better show its signal. The down-sampling method involves sampling less of the observations from the “no diabetes” class to again show the signal of the cases better. SMOTE works by generating new instances of the “diabetes” class by looking at the already input cases. Finally, we used repeated k-fold cross-validation with 5 folds and 5 repeats during model training to select the best model. 
  
-  Primarily, we fit a naive Bayes classifier. It describes the relationship of conditional probabilities of statistical quantities. In Bayesian classification, we are interested in finding the probability of a label given some observed features. Applying on the original, the weighted model and the three resampling methods, we got AUC 0.831 for original. Even though the AUC scores suggest that it is a modest model for analyzing this dataset, after inspecting the predictions, we found the sensitivity is quite low and no information rate is higher than the accuracy, which implies the naïve Bayes classifier is improper for this dataset because of the inherited conditional dependence. 
+  Primarily, we fit a naive Bayes classifier. It describes the relationship of conditional probabilities of statistical quantities. In Bayesian classification, we are interested in finding the probability of a label given some observed features. Applying on the original, the weighted model and the three resampling methods, we got AUC 0.831 by using original and other resampling method. Even though the AUC scores suggest that it is a modest model for analyzing this dataset, after inspecting the predictions, we found the no information rate is higher than the accuracy, which implies the naïve Bayes classifier is improper for this dataset because of the inherited conditional dependence. 
  
   After fitting the naive Bayes classifier, we decided to fit a decision tree model. Decision trees are trees that contain nodes which split the data into subsets based on some condition. Decision tree machine learning algorithms decide the optimal way to split these nodes to best classify the data point. The underlying functions used by the caret function to fit decision trees are found in the rpart R package. As with all other models, we used weighting, up-sampling, down-sampling, and SMOTE to try and improve performance. Our original model had an AUC of 0.7429, with weighting giving 0.7645, down-sampling 0.7694, up-sampling 0.7663, and SMOTE 0.7693. Hence in this case the best method was to down-sample. 
   
@@ -44,19 +44,22 @@ We then combined all the data tables from after 2007 and removed individuals wit
   
   Finally, we decided to also fit a random forest model. Random forests also use a collection of decision trees in order to classify data. The models used by caret can be found in the R package randomForest. We expected it to perform better than decision trees. Indeed, the original model gave an AUC of 0.82, weighting gave 0.824, down-sampling 0.8279, up-sampling 0.8269, and SMOTE giving 0.824. As with GBM, down-sampling gave the best results.
   
-  After fitting each of the models under the 5 different re-sampling/weighting techniques, we decided to take the model with the highest AUC from each of the models to do a further comparison. To do this, we looked at the confusion matrices of the models when predicting the test data set, their overall accuracy of prediction, and their sensitivity and specificity. The sensitivity of the prediction model summarizes how well the model predicts the “diabetes” class, whereas the specificity summarizes how well the model predicts the “no diabetes” class. Since the main goal of this project is to classify diabetes, we believe that more weight should be given towards the sensitivity of the model rather than the specificity. For comparison, we decided to leave out the naive Bayes classifier since the model simply predicted “no diabetes” for each observation except for one. Hence it is not a valid prediction model. Of the remaining four models, we plotted the prediction proportions as follows:  
+  After fitting each of the models under the 5 different re-sampling/weighting techniques, we decided to take the model with the highest AUC from each of the models to do a further comparison. To do this, we looked at the confusion matrices of the models when predicting the test data set, their overall accuracy of prediction, and their sensitivity and specificity. The sensitivity of the prediction model summarizes how well the model predicts the “diabetes” class, whereas the specificity summarizes how well the model predicts the “no diabetes” class. Since the main goal of this project is to classify diabetes, we believe that more weight should be given towards the sensitivity of the model rather than the specificity. Of the five models, we plotted the prediction proportions as follows:  
 
 ```{r, echo=FALSE, fig.height=4}
+cm_nb <- list.load("Models/confusionMatrixNB.rdata")
 cm_gbm <- list.load("Models/confusionMatrixGBM.rdata")
 cm_rf <- list.load("Models/confusionMatrixRF.rdata")
 cm_dt <- list.load("Models/confusionMatrixDT.rdata")
 cm_xgb <- list.load("Models/confusionMatrixXGB.rdata")
 
-model_compare <- data.frame(Model = c('Random Forest',
+model_compare <- data.frame(Model = c('Naive Bayes',
+                                      'Random Forest',
                                       'Gradient Boosting',
                                       'Decision Tree',
                                       'XGBoost'),
-                            Accuracy = c(cm_rf$overall[1],
+                            Accuracy = c(cm_nb$overall[1],
+                                         cm_rf$overall[1],
                                          cm_gbm$overall[1],
                                          cm_dt$overall[1],
                                          cm_xgb$overall[1]))
@@ -71,15 +74,18 @@ ggplot(aes(x=Model, y=Accuracy), data=model_compare) +
 As we can see, XGBoost has the highest prediction at 0.8787, followed closely by GBM and then by random forest and decision trees. However, since we are doing imbalanced classification, the raw prediction probability is not the best measure for comparing models. To look more closely, we decided to look at  the sensitivity/specificity of the models. Below is a side-by-side boxplot comparing these for each model. 
 
 ```{r, echo=FALSE, fig.height=4}
-model_compare_2<-data.frame(Model = c('Random Forest',
+model_compare_2<-data.frame(Model = c('Naive Bayes',
+                                      'Random Forest',
                                       'Gradient Boosting',
                                       'Decision Tree',
                                       'XGBoost'),
-                            Sensitivity=c(cm_rf$byClass[1], 
+                            Sensitivity=c(cm_nb$byClass[1],
+                                         cm_rf$byClass[1], 
                                          cm_gbm$byClass[1],
                                          cm_dt$byClass[1], 
                                          cm_xgb$byClass[1]), 
-                            Specificity=c(cm_rf$byClass[2], 
+                            Specificity=c(cm_nb$byClass[2],
+                                          cm_rf$byClass[2], 
                                           cm_gbm$byClass[2],
                                           cm_dt$byClass[2], 
                                           cm_xgb$byClass[2]))
@@ -92,9 +98,11 @@ ggplot(df2, aes(x=Model, y=value, fill=variable)) +
   ylab('Proportion') +
   guides(fill=guide_legend(title=NULL))+
   ggtitle("Sensitivity and Specificity of Models")
+#+
+ # theme(axis.text.x = element_text(angle = 15))
 ```
 
-As can be seen in this plot, both the XGBoost and GBM models have very low sensitivity but high specificity. On the other hand, both decision tree and random forest have high sensitivity and reasonable specificity. In the models we have fit there is a tradeoff between predicting more true positives and the false positive rate. Hence although the random forest model was able to correctly classify 82.38% of the true diabetes cases, it incorrectly classified 29.82% of the controls as having diabetes. This is a very high false positive rate, and hurts the practical usage of this model. On the other hand, models such as XGBoost and GBM were unable to correctly classify a significant number of cases, but had very low false positive rates at only 1.833% and 2.233% respectively. However, the extremely low power of these models to correctly classify cases in our opinion makes them inferior to the random forest model.
+As can be seen in this plot, both the XGBoost and GBM models have very low sensitivity but high specificity. On the other hand, both decision tree and random forest have high sensitivity and reasonable specificity. In the models we have fit there is a trade-off between predicting more true positives and the false positive rate. Hence although the random forest model was able to correctly classify 82.38% of the true diabetes cases, it incorrectly classified 29.82% of the controls as having diabetes. This is a very high false positive rate, and hurts the practical usage of this model. On the other hand, models such as XGBoost and GBM were unable to correctly classify a significant number of cases, but had very low false positive rates at only 1.833% and 2.233% respectively. However, the extremely low power of these models to correctly classify cases in our opinion makes them inferior to the random forest model.
 
 # Visualization 
 
@@ -133,7 +141,6 @@ ggplot(health_con_prop_by_year, aes(x = SDDSRVYR, y = proportion))+ geom_bar(aes
   xlab("Year")+ ylab("Proportions of participants")+
   ggtitle("Health condition over 10 years")+ scale_fill_brewer(palette = "YlGn", labels = c("Excellent", "Very good", "Good", "Fair", "Poor"))+
   labs(fill = "Health condition") +
-  theme(plot.title = element_text(hjust = 0.5)) +
   coord_flip()
 ```
 
