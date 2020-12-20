@@ -1,11 +1,3 @@
-# Installing Packages 
-install.packages("doParallel") 
-install.packages("dplyr") 
-install.packages("caret") 
-install.packages("xgboost") 
-install.packages("pROC") 
-install.packages("purrr") 
-
 # Loading packages 
 library(caret)        # for modeling 
 library(doParallel)		# parallel processing
@@ -26,7 +18,7 @@ ctrl <- trainControl(method = "repeatedcv",
 #set seed so cross validation done same each time we fit model 
 set.seed(1)
 
-# Set up for parallel procerssing
+# Set up for parallel processing
 registerDoParallel(4,cores=4)
 getDoParWorkers()
 

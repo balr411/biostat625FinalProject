@@ -8,8 +8,8 @@ library(DMwR)
 fitControl <- trainControl(
   method = "repeatedcv",
   number = 5,
-  ## repeated ten times
-  repeats = 10,
+  ## repeated five times
+  repeats = 5,
   summaryFunction = twoClassSummary,
   classProbs = TRUE)
 
@@ -20,19 +20,6 @@ nbFit1 <- train(DIQ010 ~ .,
                 metric = "ROC",
                 trControl = fitControl)
 
-table(predict(nbFit1$finalModel,x),y)
-
-
-
-x_test <- test[, -1]
-y_test <- test$DIQ010
-
-#pred <- predict(nbFit1$finalModel,x_test)
-
-#pred <- predict(nbFit1,x_test)
-
-pred <- predict(nbFit1, newdata = test)
-confusionMatrix(data = pred, reference = as.factor(test$DIQ010))
 
 test_roc <- function(model, data) {
   
@@ -90,7 +77,7 @@ smote_fit <- train(DIQ010 ~ .,
 
 # Examine results for test set
 model_list <- list(original = nbFit1,
-                   #weighted = weighted_fit,
+                   weighted = weighted_fit,
                    down = down_fit,
                    up = up_fit,
                    SMOTE = smote_fit)
@@ -100,6 +87,20 @@ model_list_roc <- model_list %>%
 
 model_list_roc %>%
   map(auc)
+
+#original: 0.8311
+#weighted: 0.8311
+#down-sampled: 0.8316
+#up-sampled: 0.8313
+#smote:0.8296
+
+
+#pred <- predict(nbFit1$finalModel,x_test)
+
+#pred <- predict(nbFit1,x_test)
+
+pred <- predict(nbFit1, newdata = test)
+confusionMatrix(data = pred, reference = as.factor(test$DIQ010))
 
 #get confusion matrix
 
@@ -112,6 +113,7 @@ confusionMatrix(data = pred, reference = as.factor(test$DIQ010))
 pred_smote_fit <- predict(smote_fit, newdata = test)
 confusionMatrix(data = pred, reference = as.factor(test$DIQ010))
 
+#These models aren't valid. They predict no_diabetes for all observations except one
 
 
 
