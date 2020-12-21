@@ -71,7 +71,7 @@ ggplot(aes(x=Model, y=Accuracy), data=model_compare) +
   ylab('Overall Accuracy')
 ```
 
-As we can see, XGBoost has the highest prediction at 0.8787, followed closely by GBM and then by random forest and decision trees. However, since we are doing imbalanced classification, the raw prediction probability is not the best measure for comparing models. To look more closely, we decided to look at  the sensitivity/specificity of the models. Below is a side-by-side boxplot comparing these for each model. 
+As we can see, XGBoost has the highest prediction at 0.8787, followed closely by GBM and then by naive Bayes, random forest, and decision trees. However, since we are doing imbalanced classification, the raw prediction probability is not the best measure for comparing models. To look more closely, we decided to look at  the sensitivity/specificity of the models. Below is a side-by-side bar graph comparing these for each model. 
 
 ```{r, echo=FALSE, fig.height=4}
 model_compare_2<-data.frame(Model = c('Naive Bayes',
@@ -102,7 +102,7 @@ ggplot(df2, aes(x=Model, y=value, fill=variable)) +
  # theme(axis.text.x = element_text(angle = 15))
 ```
 
-As can be seen in this plot, both the XGBoost and GBM models have very low sensitivity but high specificity. On the other hand, both decision tree and random forest have high sensitivity and reasonable specificity. In the models we have fit there is a trade-off between predicting more true positives and the false positive rate. Hence although the random forest model was able to correctly classify 82.38% of the true diabetes cases, it incorrectly classified 29.82% of the controls as having diabetes. This is a very high false positive rate, and hurts the practical usage of this model. On the other hand, models such as XGBoost and GBM were unable to correctly classify a significant number of cases, but had very low false positive rates at only 1.833% and 2.233% respectively. However, the extremely low power of these models to correctly classify cases in our opinion makes them inferior to the random forest model.
+As can be seen in this plot, both the XGBoost and GBM models have very low sensitivity but high specificity. On the other hand, both decision tree and random forest have high sensitivity and reasonable specificity. Naive Bayes falls somewhere in the middle with somewhat low sensitivity and good specificity. In the models we have fit there is a trade-off between predicting more true positives and the false positive rate. Hence although the random forest model was able to correctly classify 82.38% of the true diabetes cases, it incorrectly classified 29.82% of the controls as having diabetes. This is a very high false positive rate, and hurts the practical usage of this model. On the other hand, models such as XGBoost and GBM were unable to correctly classify a significant number of cases, but had very low false positive rates at only 1.833% and 2.233% respectively. However, the extremely low power of these models to correctly classify cases in our opinion makes them inferior to the random forest model.
 
 # Visualization 
 

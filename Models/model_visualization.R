@@ -1,4 +1,5 @@
 library("reshape2")
+library("doParallel")
 
 train<-read.table("finalTables/train_cat.txt", header=TRUE)
 test<-read.table("finalTables/test_cat.txt", header=TRUE)
