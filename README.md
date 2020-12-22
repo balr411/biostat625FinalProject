@@ -4,5 +4,11 @@ Predicting Diabetes status in NHANES dataset
 
 1) Final Project Report: FinalReport.pdf
 2) Final Project Report (RMarkdown): FinalReport.Rmd
-3) Final Project code: model_visualization.R
-4) Dataset: finalTables 
+3) Final Code: model_visualization.R
+4) Final Dataset: finalTables 
+5) Project Codes: Models
+
+6) Dataset construction:
+a) Raw Dataset - nnhanes0102 - nnhanes9900
+b) Initial Code - code0102.R - code9900.R
+
