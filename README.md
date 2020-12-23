@@ -5,7 +5,7 @@
 ### Final Submission
 1) Final Project Report: FinalReport.pdf
 2) Final Project Report (RMarkdown): FinalReport.Rmd
-3) Final Code: model_visualization.R
+3) Final Code: model_visualization.R and other R scripts in Models folder
 4) Final Dataset: finalTables 
 
 ### Dataset and Codes
